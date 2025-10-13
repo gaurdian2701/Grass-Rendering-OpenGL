@@ -17,8 +17,7 @@ void ShaderHandler::TryLoadShader(FileHandler& fileHandler, const std::string& f
 {
 	std::string shaderString = "";
 
-	assert(fileHandler.OpenShaderFile(shaderString, filePath));
-
+	fileHandler.OpenShaderFile(shaderString, filePath);
 	const char* shaderSource = shaderString.c_str();
 
 	m_shaderDictionary[filePath] = 

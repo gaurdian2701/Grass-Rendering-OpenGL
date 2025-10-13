@@ -16,7 +16,6 @@
 static void Framebuffer_Size_Callback(GLFWwindow* someWindow, int someWidth, int someHeight);
 static void Mouse_Callback(GLFWwindow* someWindow, double someXPos, double someYPos);	
 static void ProcessInput(GLFWwindow* someWindow);
-static void SleepForCurrentFrame();
 
 static void CheckForCursorVisibility(GLFWwindow* someWindow);
 static void SetupModel(Model* someModel);
