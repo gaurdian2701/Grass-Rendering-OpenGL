@@ -19,7 +19,7 @@ private:
 	glm::vec3 m_cameraPosition;
 	glm::vec3 m_cameraFront;
 
-	GLFWwindow* m_window;
+	GLFWwindow* m_window = nullptr;
 
 	float m_cameraSpeed = 0.0f;
 	float m_yaw = -90.0f;

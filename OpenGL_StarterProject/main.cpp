@@ -1,9 +1,6 @@
-#pragma once
-
 #include "glad/glad.h"
 #include "Camera.h"
 #include "FileHandler.h"
-#include "Shader.h"
 #include "ShaderProgram.h"
 #include "Config.h"
 #include <vector>
@@ -14,33 +11,37 @@
 #include "StaticObject.h"
 #include "ShaderHandler.h"
 #include <random>
+#include <thread>
 
-void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height);
-void Mouse_Callback(GLFWwindow* window, double xpos, double ypos);	
-void ProcessInput(GLFWwindow* window);
+static void Framebuffer_Size_Callback(GLFWwindow* someWindow, int someWidth, int someHeight);
+static void Mouse_Callback(GLFWwindow* someWindow, double someXPos, double someYPos);	
+static void ProcessInput(GLFWwindow* someWindow);
+static void SleepForCurrentFrame();
 
-void CheckForCursorVisibility(GLFWwindow* window);
-void SetupModel(Model& model);
-void InitiateShutdown();
-void UpdateUI();
-void ReceiveInput();
+static void CheckForCursorVisibility(GLFWwindow* someWindow);
+static void SetupModel(Model* someModel);
+static void InitiateShutdown();
+static void UpdateUI();
+static void ReceiveInput();
 
-GLFWwindow* window = nullptr;
+static GLFWwindow* window = nullptr;
 Camera* camera = nullptr;
+static FileHandler fileHandler = FileHandler();
 
-float deltaTime = 0.0f;
-bool cursorHidden = false;
+constexpr float TIME_IN_ONE_FRAME = 1.0f / FPS;
+static float deltaTime = 0.0f;
+static bool cursorHidden = false;
 
-std::vector<glm::vec3> objectOffsets;
-std::chrono::duration<float> elapsedTime;
+static std::vector<glm::vec3> objectOffsets = std::vector<glm::vec3>();
+static std::chrono::duration<float> elapsedTime;
 
-std::random_device randomDevice;
-std::mt19937 randomGenerator = std::mt19937(randomDevice());
+static std::random_device randomDevice;
+static std::mt19937 randomGenerator = std::mt19937(randomDevice());
 
-std::uniform_real_distribution<float> offsetDistribution(MIN_LATERAL_RANDOM_OFFSET,
+static std::uniform_real_distribution<float> offsetDistribution(MIN_LATERAL_RANDOM_OFFSET,
 	MAX_LATERAL_RANDOM_OFFSET);
 
-glm::vec2 windVector = glm::vec2(0.0f);
+static glm::vec2 windVector = glm::vec2(0.0f);
 
 void InitializeOpenGLContext()
 {
@@ -54,7 +55,7 @@ void InitializeOpenGLContext()
 
 	if (window == NULL)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
+		std::cout << "Failed to create GLFW window" << "\n";
 		glfwTerminate();
 	}
 }
@@ -68,7 +69,7 @@ void InitContextCallbacks()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
+		std::cout << "Failed to initialize GLAD" << "\n";
 		glfwTerminate();
 	}
 }
@@ -85,7 +86,6 @@ int main()
 
 	InitContextCallbacks();
 
-	FileHandler fileHandler = FileHandler();
 	ShaderHandler* shaderHandler = new ShaderHandler(fileHandler);
 
 	IMGUI_CHECKVERSION();
@@ -107,15 +107,12 @@ int main()
 			shaderHandler->GetShader(SWAYING_OBJECT_VERTEX_SHADER_FILEPATH),
 			shaderHandler->GetShader(GRASS_RENDER_FRAGMENT_SHADER_FILEPATH));
 
-	glm::mat4 modelTransformationMatrix = glm::mat4(1.0f);
 	glm::mat4 viewTransformationMatrix = glm::mat4(1.0f);
-	glm::mat4 projectionTransformationMatrix = glm::mat4(1.0f);
-
-	projectionTransformationMatrix = glm::perspective(glm::radians(45.0f),
+	glm::mat4 projectionTransformationMatrix = glm::perspective(glm::radians(45.0f),
 		static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
 		0.1f, 100.0f);
 
-	Model grassModel(MODEL_PATH.c_str());
+	Model* grassModel = new Model(MODEL_PATH.c_str());
 	SetupModel(grassModel);
 
 	StaticObject lightSource = StaticObject(LIGHT_SOURCE_COLOR,
@@ -128,18 +125,17 @@ int main()
 	illuminatedObjectShaderProgram->SetVec3Float("lightPosition", LIGHT_SOURCE_POSITION);
 	illuminatedObjectShaderProgram->SetFloat("material.shininess", SPECULAR_MATERIAL_SHININESS);
 
-	float lastFrame = 0.0f;
+	float lastFrameTime = 0.0f;
 	auto timeAtStart = std::chrono::high_resolution_clock::now();
-	auto timeAtCurrentFrame = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
-		float currentFrame = static_cast<float>(glfwGetTime());
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		float currentFrameTime = static_cast<float>(glfwGetTime());
+		deltaTime = currentFrameTime - lastFrameTime;
+		lastFrameTime = currentFrameTime;
 		
-		auto timeAtCurrentFrame = std::chrono::high_resolution_clock::now();
-		elapsedTime = timeAtCurrentFrame - timeAtStart;
+		auto timeSinceStart = std::chrono::high_resolution_clock::now();
+		elapsedTime = timeSinceStart - timeAtStart;
 
 		glfwPollEvents();
 		ProcessInput(window);
@@ -170,7 +166,7 @@ int main()
 		illuminatedObjectShaderProgram->SetMat4("modelTransformationMatrix", 
 			glm::value_ptr(modelTransformationMatrix));
 
-		grassModel.Draw(illuminatedObjectShaderProgram, DrawMode::INSTANCED);
+		grassModel->Draw(illuminatedObjectShaderProgram, DrawMode::INSTANCED);
 		lightSource.Draw(lightSourceShaderProgram, viewTransformationMatrix);
 
 		UpdateUI();
@@ -179,33 +175,36 @@ int main()
 
 	delete lightSourceShaderProgram;
 	delete illuminatedObjectShaderProgram;
+	delete shaderHandler;
+	glfwDestroyWindow(window);
+	delete camera;
 
 	InitiateShutdown();
 	return 0;
 }
 
 
-void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height)
+void Framebuffer_Size_Callback(GLFWwindow* someWindow, int someWidth, int someHeight)
 {
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, someWidth, someHeight);
 }
 
-void Mouse_Callback(GLFWwindow* window, double xpos, double ypos)
+void Mouse_Callback(GLFWwindow* someWindow, double someXPos, double someYPos)
 {
 	if (!cursorHidden)
 	{
-		camera->MouseCallback(xpos, ypos);
+		camera->MouseCallback(someXPos, someYPos);
 	}
 }
 
-void ProcessInput(GLFWwindow* window)
+void ProcessInput(GLFWwindow* someWindow)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(someWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
-		glfwSetWindowShouldClose(window, true);
+		glfwSetWindowShouldClose(someWindow, true);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_TAB) == (GLFW_PRESS | GLFW_RELEASE))
+	if (glfwGetKey(someWindow, GLFW_KEY_TAB) == (GLFW_PRESS | GLFW_RELEASE))
 	{
 		cursorHidden = !cursorHidden;
 	}
@@ -216,12 +215,12 @@ void ProcessInput(GLFWwindow* window)
 	}
 }
 
-void CheckForCursorVisibility(GLFWwindow* window)
+void CheckForCursorVisibility(GLFWwindow* someWindow)
 {
-	glfwSetInputMode(window, GLFW_CURSOR, cursorHidden == false ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	glfwSetInputMode(someWindow, GLFW_CURSOR, cursorHidden == false ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
-void SetupModel(Model& model)
+void SetupModel(Model* someModel)
 {
 	std::uniform_real_distribution<float> 
 		verticalOffsetDistribution(MIN_VERTICAL_RANDOM_OFFSET, MAX_VERTICAL_RANDOM_OFFSET);
@@ -237,9 +236,9 @@ void SetupModel(Model& model)
 		}
 	}
 
-	model.SetupOffsets(&objectOffsets);
-	model.SetupInstanceCount(NUMBER_OF_OBJECTS);
-	model.SetupMeshes();
+	someModel->SetupOffsets(&objectOffsets);
+	someModel->SetupInstanceCount(NUMBER_OF_OBJECTS);
+	someModel->SetupMeshes();
 }
 
 
@@ -266,7 +265,6 @@ void UpdateUI()
 
 	ImGui::Text("Time Step: %.4f", elapsedTime.count());
 	ImGui::Text("Sine Value: %.4f", sin(elapsedTime.count()));
-
 
 	ReceiveInput();
 

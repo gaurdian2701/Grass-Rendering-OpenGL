@@ -4,37 +4,39 @@
 #include "glm/glm.hpp"
 
 //SCREEN CONFIGS
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 800;
-const glm::vec4 BACKGROUND_COLOUR(1.0f, 1.0f, 1.0f, 1.0f);
+constexpr int SCREEN_WIDTH = 1000;
+constexpr int SCREEN_HEIGHT = 800;
+constexpr glm::vec4 BACKGROUND_COLOUR(1.0f, 1.0f, 1.0f, 1.0f);
+
+//FRAME CONFIGS
+constexpr float FPS = 60.0f;
 
 //CAMERA CONFIGS
-const float CAMERA_SPEED = 5.0f;
-const glm::vec3 CAMERA_STARTING_POSITION(0.0, 0.0f, 3.0f);
-const float RENDER_DISTANCE = 0;
+constexpr float CAMERA_SPEED = 5.0f;
+constexpr glm::vec3 CAMERA_STARTING_POSITION(0.0, 0.0f, 3.0f);
+constexpr float RENDER_DISTANCE = 0;
 
 //LIGHT CONFIGS
-const glm::vec3 LIGHT_SOURCE_POSITION(0.0f, 0.0, -10.0f);
-const glm::vec3 LIGHT_SOURCE_COLOR(0.5f, 1.0f, 1.0f);
+constexpr glm::vec3 LIGHT_SOURCE_POSITION(0.0f, 0.0, -10.0f);
+constexpr glm::vec3 LIGHT_SOURCE_COLOR(0.5f, 1.0f, 1.0f);
 
 //MATERIAL CONFIGS
-const glm::vec3 AMBIENT_MATERIAL_COLOR(1.0f, 0.5f, 0.31f);
-const glm::vec3 DIFFUSE_MATERIAL_COLOR(1.0f, 0.5f, 0.31f);
-const glm::vec3 SPECULAR_MATERIAL_COLOR(0.5f, 0.5f, 0.5f);
-const float SPECULAR_MATERIAL_SHININESS = 8.0f;
+constexpr glm::vec3 AMBIENT_MATERIAL_COLOR(1.0f, 0.5f, 0.31f);
+constexpr glm::vec3 DIFFUSE_MATERIAL_COLOR(1.0f, 0.5f, 0.31f);
+constexpr glm::vec3 SPECULAR_MATERIAL_COLOR(0.5f, 0.5f, 0.5f);
+constexpr float SPECULAR_MATERIAL_SHININESS = 8.0f;
 
-//MODEL CONFIGS
-const std::string MODEL_PATH = std::filesystem::path{"3DModels/grass/grass.obj"}.string();
+//MODEL FILE PATHS
+const std::string MODEL_PATH = std::filesystem::path{"C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/3DModels/grass/grass.obj" }.string();
 
 //VERTEX SHADER FILE PATHS
-const std::string SIMPLE_OBJECT_VERTEX_SHADER_FILEPATH = "shaders/simpleObject.vert";
-const std::string SWAYING_OBJECT_VERTEX_SHADER_FILEPATH = "shaders/swayingObject.vert";
+const std::string SIMPLE_OBJECT_VERTEX_SHADER_FILEPATH = std::filesystem::path{"C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/shaders/simpleObject.vert"}.string();
+const std::string SWAYING_OBJECT_VERTEX_SHADER_FILEPATH = std::filesystem::path{ "C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/shaders/swayingObject.vert" }.string();
 
 //FRAGMENT SHADER FILE PATHS
-const std::string SIMPLE_OBJECT_FRAGMENT_SHADER_FILEPATH = "shaders/simpleObject.frag";
-const std::string PHONG_LIGHTING_FRAGMENT_SHADER_FILEPATH = "shaders/phongLighting.frag";
-const std::string GRASS_RENDER_FRAGMENT_SHADER_FILEPATH = "shaders/grassRender.frag";
-
+const std::string SIMPLE_OBJECT_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/shaders/simpleObject.frag" }.string();
+const std::string PHONG_LIGHTING_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/shaders/phongLighting.frag" }.string();
+const std::string GRASS_RENDER_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "C:/Users/Kiran.Gaurdian/Desktop/Assignments/3D and Shader Programming/OpenGL_StarterProject/OpenGL_StarterProject/shaders/grassRender.frag" }.string();
 
 //TEXTURE FILE PATHS
 const std::string CONTAINER_TEXTURE_FILEPATH = "textures/container.png";
