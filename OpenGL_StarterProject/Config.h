@@ -27,24 +27,24 @@ constexpr glm::vec3 SPECULAR_MATERIAL_COLOR(0.5f, 0.5f, 0.5f);
 constexpr float SPECULAR_MATERIAL_SHININESS = 8.0f;
 
 //MODEL FILE PATHS
-const std::string MODEL_PATH = std::filesystem::path{"3DModels/grass/grass.obj" }.string();
+const std::string MODEL_PATH = std::filesystem::path{"3DModels/grass/grass.obj"}.string();
 
 //VERTEX SHADER FILE PATHS
 const std::string SIMPLE_OBJECT_VERTEX_SHADER_FILEPATH = std::filesystem::path{"shaders/simpleObject.vert"}.string();
-const std::string SWAYING_OBJECT_VERTEX_SHADER_FILEPATH = std::filesystem::path{ "shaders/swayingObject.vert" }.string();
+const std::string SWAYING_OBJECT_VERTEX_SHADER_FILEPATH = std::filesystem::path{"shaders/swayingObject.vert"}.string();
 
 //FRAGMENT SHADER FILE PATHS
-const std::string SIMPLE_OBJECT_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "shaders/simpleObject.frag" }.string();
-const std::string PHONG_LIGHTING_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "shaders/phongLighting.frag" }.string();
-const std::string GRASS_RENDER_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{ "shaders/grassRender.frag" }.string();
+const std::string SIMPLE_OBJECT_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{"shaders/simpleObject.frag"}.string();
+const std::string PHONG_LIGHTING_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{"shaders/phongLighting.frag"}.string();
+const std::string GRASS_RENDER_FRAGMENT_SHADER_FILEPATH = std::filesystem::path{"shaders/grassRender.frag"}.string();
 
 //TEXTURE FILE PATHS
-const std::string CONTAINER_TEXTURE_FILEPATH = "textures/container.png";
-const std::string CONTAINER_SPECULAR_TEXTURE_FILEPATH = "textures/container_specular.png";
+const std::string CONTAINER_TEXTURE_FILEPATH = std::filesystem::path{"textures/container.png"}.string();
+const std::string CONTAINER_SPECULAR_TEXTURE_FILEPATH = std::filesystem::path{"textures/container_specular.png"}.string();
 
 //GRASS CONFIGS
-constexpr unsigned int NUMBER_OF_ROWS = 100;
-constexpr unsigned int NUMBER_OF_COLUMNS = 100;
+constexpr unsigned int NUMBER_OF_ROWS = 1000;
+constexpr unsigned int NUMBER_OF_COLUMNS = 1000;
 constexpr float MIN_LATERAL_RANDOM_OFFSET = 0.5f;
 constexpr float MAX_LATERAL_RANDOM_OFFSET = 0.8f;
 constexpr float MIN_VERTICAL_RANDOM_OFFSET = 0.0f;

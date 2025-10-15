@@ -13,7 +13,7 @@
 #include <random>
 #include <thread>
 
-static void Framebuffer_Size_Callback(GLFWwindow* someWindow, int someWidth, int someHeight);
+static void Framebuffer_Size_Callback(GLFWwindow* someWindow, int someWidth, int someHeight); 
 static void Mouse_Callback(GLFWwindow* someWindow, double someXPos, double someYPos);	
 static void ProcessInput(GLFWwindow* someWindow);
 
