@@ -4,6 +4,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <filesystem>
 
 
 Model::Model(const char* modelPath)
@@ -45,6 +46,8 @@ void Model::SetupInstanceCount(unsigned int instanceCount)
 
 void Model::LoadModel(std::string modelPath)
 {
+	std::cout << std::filesystem::current_path() << std::endl;
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
 
